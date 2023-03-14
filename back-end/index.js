@@ -11,9 +11,11 @@ app.use(cors());
 // Rotas
 const salaoRouter = require("./src/routes/salao.routes");
 const clienteRouter = require("./src/routes/cliente.routes");
+const servicoRouter = require("./src/routes/servico.routes");
 
 app.use("/salao", salaoRouter);
 app.use("/clientes", clienteRouter);
+app.use("/servicos", servicoRouter);
 
 
 // Iniciar o servidor

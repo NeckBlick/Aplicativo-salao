@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 router.get('/status/:status', async (req, res) => {
     const { status } = req.params;
     try {
-        const clientes = await find({ status: status });
+        const clientes = await Cliente.find({ status: status });
         res.status(200).json(clientes);
     }catch (err) {
         res.status(500).json({ message: err.message });
