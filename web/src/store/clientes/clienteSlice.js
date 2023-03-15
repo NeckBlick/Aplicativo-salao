@@ -15,6 +15,11 @@ const initialState = {
     status: "",
     data_cadastro: "",
   },
+  clienteEdit: {
+    nome: "",
+    email: "",
+    status: "",
+  },
 };
 
 // Funções assíncronas
@@ -28,11 +33,26 @@ export const buscarClientes = createAsyncThunk(
 
 export const editarCliente = createAsyncThunk(
   "cliente/editarCliente",
-  async (id,cliente) => {
-    
-    const { data } = await api.patch("/clientes/"+ id, cliente);
-    console.log(data)
-    return data;
+  async ({ id, cliente }, { rejectWithValue }) => {
+    try {
+      console.log(cliente);
+      const { data } = await api.patch("/clientes/" + id, cliente);
+      return data;
+    } catch (error) {
+      rejectWithValue(error.response.data);
+    }
+  }
+);
+export const cadastrarCliente = createAsyncThunk(
+  "cliente/cadastrarCliente",
+  async ({ cliente }, { rejectWithValue }) => {
+    try {
+      console.log(cliente);
+      const { data } = await api.post("/clientes", cliente);
+      return data;
+    } catch (error) {
+      rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -54,23 +74,44 @@ const clienteSlice = createSlice({
     modalChange(state) {
       state.modal = state.modal ? false : true;
     },
-    changeCliente(state, { payload: event }) {
-      state.cliente[event.target.name] = event.target.value;
-    }
+    changeCliente(state, { payload }) {
+      state.cliente[payload.name] = payload.value;
+    },
   },
   extraReducers: {
     [buscarClientes.fulfilled]: (state, action) => {
       state.clientes = action.payload;
       state.loading = false;
     },
+    [editarCliente.pending]: (state) => {
+      state.loadingButton = true;
+    },
     [editarCliente.fulfilled]: (state, action) => {
       state.cliente = action.payload;
       state.loadingButton = false;
-      state.modal = false; 
+      state.modal = false;
+      state.drawer = false;
+      
+    },
+    [editarCliente.rejected]: (state, action) => {
+      state.loadingButton = false;
+      state.message = action.payload;
+      state.modal = false;
       state.drawer = false;
     },
+    [cadastrarCliente.pending]: (state) => {
+      state.loadingButton = true;
+    },
+    [cadastrarCliente.fulfilled]: (state, action) => {
+      state.cliente = action.payload;
+      state.loadingButton = false;
+      state.modal = false;
+      state.drawer = false;
+      
+    }
   },
 });
 
-export const { setCliente, novoCliente,modalChange,changeCliente } = clienteSlice.actions;
+export const { setCliente, novoCliente, modalChange, changeCliente } =
+  clienteSlice.actions;
 export default clienteSlice.reducer;

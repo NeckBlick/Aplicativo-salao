@@ -9,6 +9,7 @@ import {
   editarCliente,
   modalChange,
   changeCliente,
+  cadastrarCliente
 } from "../../store/clientes/clienteSlice";
 import moment from "moment";
 
@@ -16,8 +17,16 @@ import { useDispatch, useSelector } from "react-redux";
 const { Column, HeaderCell, Cell } = Table;
 
 function Clientes() {
-  const { clientes, loading, cliente, drawer, tipoButton, loadingButton, modal } =
-    useSelector((state) => state.cliente);
+  const {
+    clientes,
+    loading,
+    cliente,
+    drawer,
+    tipoButton,
+    loadingButton,
+    modal,
+  } = useSelector((state) => state.cliente);
+
   const dispatch = useDispatch();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
@@ -28,10 +37,14 @@ function Clientes() {
   });
 
   function handleNovoCliente() {
-    dispatch(novoCliente(novoClienteDrawer));
+    dispatch(cadastrarCliente({cliente: {
+      nome: cliente.nome,
+      email: cliente.email,
+      status: cliente.status,
+    }}));
   }
   function handleEditarCliente() {
-    dispatch(modalChange())
+    dispatch(modalChange());
   }
   function handleChange(e) {
     dispatch(changeCliente(e.target));
@@ -102,7 +115,12 @@ function Clientes() {
             <Column width={150}>
               <HeaderCell></HeaderCell>
               <Cell className="flex items-center justify-center">
-                  <button className="bg-site-blue rounded-md text-white font-medium px-2 py-1" onClick={() => dispatch(setCliente(rowData))}>Ver informações</button>
+                <button
+                  className="bg-site-blue rounded-md text-white font-medium px-2 py-1"
+                  onClick={() => dispatch(setCliente(rowData))}
+                >
+                  Ver informações
+                </button>
               </Cell>
             </Column>
           </Table>
@@ -136,7 +154,7 @@ function Clientes() {
               <input
                 type={"text"}
                 className="border-2 border-site-gray-light rounded-md p-2"
-                value={tipoButton == "Editar" && drawer ? cliente.nome : ""}
+                value={ cliente.nome }
                 name="nome"
                 onChange={handleChange}
               />
@@ -145,7 +163,7 @@ function Clientes() {
               <label className="text-lg text-site-black-dark">Status</label>
               <select
                 className="border-2 border-site-gray-light rounded-md p-2"
-                value={tipoButton == "Editar" && drawer ? cliente.status : ""}
+                value={ cliente.status }
                 name="status"
                 onChange={handleChange}
               >
@@ -161,7 +179,7 @@ function Clientes() {
               <input
                 type={"text"}
                 className="border-2 border-site-gray-light rounded-md p-2"
-                value={tipoButton == "Editar" && drawer ? cliente.email : ""}
+                value={cliente.email }
                 name="email"
                 onChange={handleChange}
               />
@@ -172,27 +190,53 @@ function Clientes() {
               tipoButton === "Criar" ? handleNovoCliente : handleEditarCliente
             }
             className="bg-site-blue w-full text-lg text-white"
-            loading={loadingButton}
           >
             {tipoButton} cliente
           </Button>
         </Drawer.Body>
       </Drawer>
-      <Modal size="xs" backdrop="static" role="alertdialog" open={modal} onClose={() => dispatch(modalChange())}>
+      <Modal
+        size="xs"
+        backdrop="static"
+        role="alertdialog"
+        open={modal}
+        onClose={() => dispatch(modalChange())}
+      >
         <Modal.Header>
           <Modal.Title>Editar Cliente</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="text-lg">Você tem certeza que vai editar esse cliente?</p>
+          <p className="text-lg">
+            Você tem certeza que vai editar esse cliente?
+          </p>
         </Modal.Body>
         <Modal.Footer>
-        <Button  appearance="primary" onClick={() => dispatch(editarCliente(cliente._id, cliente))} className="bg-site-blue text-base">
+          <Button
+            appearance="primary"
+            onClick={() =>
+              dispatch(
+                editarCliente({
+                  id: cliente._id,
+                  cliente: {
+                    nome: cliente.nome,
+                    email: cliente.email,
+                    status: cliente.status,
+                  },
+                })
+              )
+            }
+            loading={loadingButton}
+            className="bg-site-blue text-base"
+          >
             Ok
           </Button>
-          <Button onClick={() => dispatch(modalChange())} appearance="subtle" className="text-base">
+          <Button
+            onClick={() => dispatch(modalChange())}
+            appearance="subtle"
+            className="text-base"
+          >
             Cancel
           </Button>
-          
         </Modal.Footer>
       </Modal>
     </div>
