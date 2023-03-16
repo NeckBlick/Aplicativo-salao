@@ -8,6 +8,7 @@ import {
   novoCliente,
   editarCliente,
   modalChange,
+  drawerChange,
   changeCliente,
   cadastrarCliente
 } from "../../store/clientes/clienteSlice";
@@ -26,21 +27,16 @@ function Clientes() {
     loadingButton,
     modal,
   } = useSelector((state) => state.cliente);
-
   const dispatch = useDispatch();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-  const [novoClienteDrawer, setNovoCliente] = useState({
-    nome: "",
-    email: "",
-    status: "",
-  });
 
   function handleNovoCliente() {
     dispatch(cadastrarCliente({cliente: {
       nome: cliente.nome,
       email: cliente.email,
       status: cliente.status,
+      senha: cliente.senha,
     }}));
   }
   function handleEditarCliente() {
@@ -65,14 +61,14 @@ function Clientes() {
 
   return (
     <div className="w-full h-full p-10">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 lg:flex-row md:flex-row space-y-3 flex-col">
         <h1 className="text-4xl font-bold">Clientes</h1>
         <button
-          className="bg-site-blue text-white text-lg font-medium px-4 py-3 rounded-md flex items-center"
+          className="bg-site-blue text-white text-lg font-medium lg:px-4 lg:py-3  px-3 py-2 rounded-md flex items-center "
           onClick={() => dispatch(novoCliente())}
         >
+          <AiOutlinePlus size={20} className="mr-2" />
           Novo Cliente
-          <AiOutlinePlus size={20} className="ml-2" />
         </button>
       </div>{" "}
       {/** Fim do header */}
@@ -82,7 +78,7 @@ function Clientes() {
       {!loading && (
         <div>
           <Table
-            width={800}
+            
             height={400}
             data={paginationData}
             onRowClick={(rowData) => {
@@ -101,7 +97,7 @@ function Clientes() {
 
             <Column width={150}>
               <HeaderCell>Status</HeaderCell>
-              <Cell dataKey="status" className="capitalize" />
+              <Cell dataKey="status" data-type={rowData => rowData.status} className="capitalize data-[type=ativo]:text-green-500" />
             </Column>
 
             <Column width={150}>
@@ -141,7 +137,7 @@ function Clientes() {
         </div>
       )}
       {/* Abertura do Drawer */}
-      <Drawer open={drawer} onClose={() => dispatch(setCliente())}>
+      <Drawer open={drawer} onClose={() => dispatch(drawerChange())}>
         <Drawer.Header>
           <Drawer.Title className="text-3xl text-site-black-dark">
             {tipoButton === "Criar" ? "Novo Cliente" : "Editar Cliente"}
@@ -171,7 +167,7 @@ function Clientes() {
                   Selecione uma opção
                 </option>
                 <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
+               { tipoButton !== "Criar" &&  <option value="inativo">Inativo</option>}
               </select>
             </div>
             <div className="col-span-2 flex flex-col mb-8">
@@ -184,6 +180,16 @@ function Clientes() {
                 onChange={handleChange}
               />
             </div>
+           {tipoButton === "Criar" && <div className="col-span-2 flex flex-col mb-8">
+              <label className="text-lg text-site-black-dark">Senha</label>
+              <input
+                type={"password"}
+                className="border-2 border-site-gray-light rounded-md p-2"
+                value={cliente.senha}
+                name="senha"
+                onChange={handleChange}
+              />
+            </div>}
           </div>
           <Button
             onClick={

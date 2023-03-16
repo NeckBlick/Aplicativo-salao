@@ -71,6 +71,9 @@ const clienteSlice = createSlice({
       state.drawer = state.drawer ? false : true;
       state.cliente = initialState.cliente;
     },
+    drawerChange(state) {
+      state.drawer = state.drawer ? false : true;
+    },
     modalChange(state) {
       state.modal = state.modal ? false : true;
     },
@@ -112,6 +115,6 @@ const clienteSlice = createSlice({
   },
 });
 
-export const { setCliente, novoCliente, modalChange, changeCliente } =
+export const { setCliente, novoCliente, modalChange, changeCliente,drawerChange } =
   clienteSlice.actions;
 export default clienteSlice.reducer;
