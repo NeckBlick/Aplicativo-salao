@@ -26,6 +26,10 @@ const servicoSchema = new Schema({
     data_cadastro:{
         type: Date,
         default: Date.now
+    },
+    foto:{
+        type: String,
+        required: true
     }
 });
 
