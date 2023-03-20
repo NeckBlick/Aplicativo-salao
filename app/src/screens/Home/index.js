@@ -1,6 +1,17 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Box, Text, Image, Button, Icon, Input, ScrollView } from "native-base";
+import {
+  Box,
+  Text,
+  Image,
+  Button,
+  Icon,
+  Input,
+  ScrollView,
+  composeEventHandlers,
+} from "native-base";
 import CardCorte from "../../components/CardCorte";
+import ButtonFinalizar from "../../components/ButtonFinalizar";
+import FinalizarAgendamento from "../../components/FinalizarAgendamento";
 import {
   useFonts,
   Poppins_400Regular,
@@ -179,97 +190,25 @@ export default function Home() {
         </ScrollView>
       </Box>
 
-      <Box
-        bg={{
-          linearGradient: {
-            colors: ["#00004C", "#1A0C9A"],
-            start: [0, 0],
-            end: [1, 0],
-          },
+      <ButtonFinalizar
+        direction="up"
+        toggleModal={() => modalRef.current?.open()}
+        style={{
+          position: "absolute",
+          width: "100%",
+          bottom: 0,
         }}
-        display="flex"
-        flexDirection="row"
-        position="absolute"
-        w="100%"
-        bottom={0}
-      >
-        <Button
-          w="100%"
-          variant="ghost"
-          onPress={() => modalRef.current?.open()}
-          py={2}
-          m={0}
-          justifyContent="flex-start"
-          leftIcon={
-            <Icon
-              as={<MaterialCommunityIcons name="chevron-up" />}
-              size={8}
-              color="#FFF"
-              mr={5}
-            />
-          }
-        >
-          <Box>
-            <Text color="#FFF" fontFamily="Poppins_600SemiBold" fontSize={16}>
-              Finalizar agendamento
-            </Text>
-            <Text color="#FFF" fontFamily="Poppins_400Regular" fontSize={8}>
-              Escolha um horário e método de pagamento
-            </Text>
-          </Box>
-        </Button>
-      </Box>
+      />
 
-      <Modalize snapPoint={700} ref={modalRef}>
+      <Modalize adjustToContentHeight={true} ref={modalRef}>
         <ScrollView>
-          <Box flex={1}>
-            <Box
-              bg={{
-                linearGradient: {
-                  colors: ["#00004C", "#1A0C9A"],
-                  start: [0, 0],
-                  end: [1, 0],
-                },
-              }}
-              display="flex"
-              flexDirection="row"
-              bottom={0}
-            >
-              <Button
-                w="100%"
-                variant="ghost"
-                onPress={() => modalRef.current?.close()}
-                py={2}
-                m={0}
-                justifyContent="flex-start"
-                leftIcon={
-                  <Icon
-                    as={<MaterialCommunityIcons name="chevron-left" />}
-                    size={8}
-                    color="#FFF"
-                    mr={5}
-                  />
-                }
-              >
-                <Box>
-                  <Text
-                    color="#FFF"
-                    fontFamily="Poppins_600SemiBold"
-                    fontSize={16}
-                  >
-                    Finalizar agendamento
-                  </Text>
-                  <Text
-                    color="#FFF"
-                    fontFamily="Poppins_400Regular"
-                    fontSize={8}
-                  >
-                    Escolha um horário e método de pagamento
-                  </Text>
-                </Box>
-              </Button>
-            </Box>
+          <Box>
+            <ButtonFinalizar
+              direction="left"
+              toggleModal={() => modalRef.current?.close()}
+            />
           </Box>
+          <FinalizarAgendamento />
         </ScrollView>
       </Modalize>
     </Box>
